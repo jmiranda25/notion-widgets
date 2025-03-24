@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Greeting Widget</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-variant-caps: all-petite-caps;
+      margin: 0;
+      padding: 0;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .widget {
+      text-align: center;
+      color: black;
+    }
+
+    .greet {
+      font-size: 2.5em;
+      margin-bottom: 0.2em;
+    }
+
+    .date {
+      font-family: monospace;
+      font-size: 1.5em;
+      margin-bottom: 0.2em;
+    }
+
+    .clock {
+      font-family: monospace;
+      font-size: 1.5em;
+    }
+
+    .time {
+      display: inline-block;
+      min-width: 15px;
+    }
+
+    .colon {
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="widget">
+    <div class="greet" id="greet"></div>
+    <div class="date" id="date"></div>
+    <div class="clock">
+      <span class="time" id="hour"></span>
+      <span class="colon">:</span>
+      <span class="time" id="min"></span>
+      <span class="colon">:</span>
+      <span class="time" id="sec"></span>
+    </div>
+  </div>
+
+  <script>
+    function displayGreeting(today) {
+      const hour = today.getHours();
+      let greet = "Good Morning";
+      if (hour >= 12 && hour < 17) greet = "Good Afternoon";
+      else if (hour >= 17) greet = "Good Evening";
+      document.getElementById("greet").textContent = greet;
+    }
+
+    function displayDate(today) {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+      const formatted = `${days[today.getDay()]}, ${months[today.getMonth()]} ${today.getDate()} ${today.getFullYear()}`;
+      document.getElementById("date").textContent = formatted;
+    }
+
+    function displayClock(today) {
+      const hour = padZero(to12Hour(today.getHours()));
+      const min = padZero(today.getMinutes());
+      const sec = padZero(today.getSeconds());
+      const ampm = today.getHours() >= 12 ? "PM" : "AM";
+      document.getElementById("hour").textContent = hour;
+      document.getElementById("min").textContent = min;
+      document.getElementById("sec").textContent = sec + " " + ampm;
+    }
+
+    function to12Hour(hour) {
+      if (hour === 0) return 12;
+      if (hour > 12) return hour - 12;
+      return hour;
+    }
+
+    function padZero(num) {
+      return num < 10 ? "0" + num : num;
+    }
+
+    function updateWidget() {
+      const now = new Date();
+      displayGreeting(now);
+      displayDate(now);
+      displayClock(now);
+      setTimeout(updateWidget, 1000);
+    }
+
+    updateWidget();
+  </script>
+</body>
+</html>
