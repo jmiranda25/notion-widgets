@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saludo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-variant-caps: all-petite-caps;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .widget {
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      padding: 1em;
+    }
+
+    .greet {
+      font-size: 2.5em;
+      margin-bottom: 0.3em;
+    }
+
+    .date, .clock {
+      font-family: monospace;
+      font-size: 1.5em;
+      margin-bottom: 0.2em;
+    }
+
+    .time {
+      display: inline-block;
+      min-width: 15px;
+    }
+
+    .colon {
+      display: inline-block;
+    }
+
+    /* Modo claro */
+    .light-mode {
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    /* Modo oscuro */
+    .dark-mode {
+      background-color: #1a1a1a;
+      color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <div class="widget">
+    <div class="greet" id="greet"></div>
+    <div class="date" id="date"></div>
+    <div class="clock">
+      <span class="time" id="hour"></span>
+      <span class="colon">:</span>
+      <span class="time" id="min"></span>
+      <span class="colon">:</span>
+      <span class="time" id="sec"></span>
+    </div>
+  </div>
+
+  <script>
+    function actualizarTema(hora) {
+      const body = document.body;
+      if (hora >= 6 && hora < 18) {
+        body.classList.remove("dark-mode");
+        body.classList.add("light-mode");
+      } else {
+        body.classList.remove("light-mode");
+        body.classList.add("dark-mode");
+      }
+    }
+
+    function actualizarSaludo(hora) {
+      let saludo = "Buenos días";
+      if (hora >= 12 && hora < 18) saludo = "Buenas tardes";
+      else if (hora >= 18) saludo = "Buenas noches";
+      document.getElementById("greet").textContent = saludo;
+    }
+
+    function actualizarFecha(fecha) {
+      const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      const formateada = `${dias[fecha.getDay()]}, ${meses[fecha.getMonth()]} ${fecha.getDate()} ${fecha.getFullYear()}`;
+      document.getElementById("date").textContent = formateada;
+    }
+
+    function actualizarReloj(fecha) {
+      const hora = formatearHora(fecha.getHours());
+      const min = agregarCero(fecha.getMinutes());
+      const seg = agregarCero(fecha.getSeconds());
+      const ampm = fecha.getHours() >= 12 ? "PM" : "AM";
+      document.getElementById("hour").textContent = hora;
+      document.getElementById("min").textContent = min;
+      document.getElementById("sec").textContent = seg + " " + ampm;
+    }
+
+    function formatearHora(hora) {
+      if (hora === 0) return 12;
+      return hora > 12 ? hora - 12 : hora;
+    }
+
+    function agregarCero(num) {
+      return num < 10 ? "0" + num : num;
+    }
+
+    function actualizarWidget() {
+      const ahora = new Date();
+      actualizarTema(ahora.getHours());
+      actualizarSaludo(ahora.getHours());
+      actualizarFecha(ahora);
+      actualizarReloj(ahora);
+      setTimeout(actualizarWidget, 1000);
+    }
+
+    actualizarWidget();
+  </script>
+</body>
+</html>
