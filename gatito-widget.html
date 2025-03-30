@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gatito Pixel Widget</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #fefefe;
+      font-family: 'Press Start 2P', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #333;
+    }
+
+    .widget {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .cat {
+      max-width: 100px;
+      image-rendering: pixelated;
+    }
+
+    .saludo {
+      margin-top: 15px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .saludo {
+        font-size: 10px;
+      }
+    }
+
+    /* Google Fonts: Pixel Style */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  </style>
+</head>
+<body>
+  <div class="widget">
+    <img class="cat" src="https://i.imgur.com/hXQxJrH.gif" alt="Gatito pixel art" />
+    <div class="saludo" id="saludo">Cargando...</div>
+  </div>
+
+  <script>
+    function obtenerSaludo() {
+      const hora = new Date().getHours();
+      if (hora < 12) return "😺 Buenos días, humano";
+      else if (hora < 18) return "😼 Buenas tardes, humano";
+      else return "🌙 Buenas noches, humano";
+    }
+
+    document.getElementById("saludo").textContent = obtenerSaludo();
+  </script>
+</body>
+</html>
