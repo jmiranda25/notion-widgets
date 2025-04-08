@@ -52,8 +52,8 @@
   </div>
 
   <script>
-    const apiKey = '2c50a74ee68f430186846159da7c638a';
-    const symbols = ['AAPL', 'TSLA', 'BTC/USD', 'AMZN']; // puedes agregar los que quieras
+    const apiKey = '0a55686cb9mshc292c2975a77e7fp1d2ca6jsn619df537ce2c';
+    const symbols = ['AAPL', 'TSLA', 'BTC-USD', 'AMZN', 'SPY'];
     const tickerDiv = document.getElementById('ticker');
 
     async function fetchMarketData() {
@@ -61,12 +61,19 @@
 
       for (const symbol of symbols) {
         try {
-          const res = await fetch(`https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${apiKey}`);
+          const res = await fetch(`https://yahoo-finance-real-time1.p.rapidapi.com/market/v2/get-quotes?symbols=${symbol}`, {
+            method: 'GET',
+            headers: {
+              'X-RapidAPI-Key': apiKey,
+              'X-RapidAPI-Host': 'yahoo-finance-real-time1.p.rapidapi.com'
+            }
+          });
           const data = await res.json();
 
-          if (data && data.price && data.percent_change) {
-            const price = parseFloat(data.price).toFixed(2);
-            const change = parseFloat(data.percent_change).toFixed(2);
+          if (data.quoteResponse.result) {
+            const info = data.quoteResponse.result[0];
+            const price = parseFloat(info.regularMarketPrice).toFixed(2);
+            const change = parseFloat(info.regularMarketChangePercent).toFixed(2);
             const isUp = parseFloat(change) >= 0;
 
             const item = document.createElement('div');
