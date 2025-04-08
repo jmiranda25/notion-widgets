@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #f8f9fa;
+      background: #f5f5f5;
       color: #111;
       padding: 10px;
     }
@@ -53,43 +53,47 @@
 
   <script>
     const apiKey = '2c50a74ee68f430186846159da7c638a';
-    const symbols = ['AAPL', 'SPX.X', 'BTC/USD'];
+    const symbols = ['AAPL', 'TSLA', 'BTC/USD', 'AMZN']; // puedes agregar los que quieras
     const tickerDiv = document.getElementById('ticker');
 
     async function fetchMarketData() {
-      const pricesRes = await fetch(`https://api.twelvedata.com/quote?symbol=${symbols.join(',')}&apikey=${apiKey}`);
-      const data = await pricesRes.json();
-
       tickerDiv.innerHTML = '';
-      symbols.forEach(symbol => {
-        const info = data[symbol];
-        if (!info || info.code) return;
 
-        const price = parseFloat(info.price).toFixed(2);
-        const change = parseFloat(info.percent_change).toFixed(2);
-        const isUp = parseFloat(change) >= 0;
+      for (const symbol of symbols) {
+        try {
+          const res = await fetch(`https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${apiKey}`);
+          const data = await res.json();
 
-        const item = document.createElement('div');
-        item.className = 'item';
+          if (data && data.price && data.percent_change) {
+            const price = parseFloat(data.price).toFixed(2);
+            const change = parseFloat(data.percent_change).toFixed(2);
+            const isUp = parseFloat(change) >= 0;
 
-        const name = document.createElement('div');
-        name.className = 'symbol';
-        name.textContent = symbol;
+            const item = document.createElement('div');
+            item.className = 'item';
 
-        const priceEl = document.createElement('div');
-        priceEl.className = 'price';
-        priceEl.textContent = `$${price}`;
+            const name = document.createElement('div');
+            name.className = 'symbol';
+            name.textContent = symbol;
 
-        const changeEl = document.createElement('div');
-        changeEl.className = `change ${isUp ? 'up' : 'down'}`;
-        changeEl.textContent = `${isUp ? '🔺' : '🔻'} ${change}%`;
+            const priceEl = document.createElement('div');
+            priceEl.className = 'price';
+            priceEl.textContent = `$${price}`;
 
-        item.appendChild(name);
-        item.appendChild(priceEl);
-        item.appendChild(changeEl);
+            const changeEl = document.createElement('div');
+            changeEl.className = `change ${isUp ? 'up' : 'down'}`;
+            changeEl.textContent = `${isUp ? '🔺' : '🔻'} ${change}%`;
 
-        tickerDiv.appendChild(item);
-      });
+            item.appendChild(name);
+            item.appendChild(priceEl);
+            item.appendChild(changeEl);
+
+            tickerDiv.appendChild(item);
+          }
+        } catch (error) {
+          console.error(`Error al cargar ${symbol}`, error);
+        }
+      }
     }
 
     fetchMarketData();
