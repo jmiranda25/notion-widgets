@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Market Widget</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: #f9f9f9;
+        color: #111;
+        padding: 10px;
+        font-size: 16px;
+      }
+      .ticker {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+      }
+      .item {
+        padding: 8px 12px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 4px rgba(0,0,0,0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ticker" id="ticker">
+      Loading data...
+    </div>
+    <script>
+      const apiKey = '2c50a74ee68f430186846159da7c638a';
+      const symbols = ['AAPL', 'SPX', 'BTC/USD'];
+      const url = `https://api.twelvedata.com/price?symbol=${symbols.join(',')}&apikey=${apiKey}`;
+
+      async function fetchPrices() {
+        const res = await fetch(url);
+        const data = await res.json();
+        const container = document.getElementById('ticker');
+        container.innerHTML = '';
+        for (const symbol of symbols) {
+          const item = document.createElement('div');
+          item.className = 'item';
+          item.innerText = `${symbol}: ${data[symbol].price}`;
+          container.appendChild(item);
+        }
+      }
+
+      fetchPrices();
+      setInterval(fetchPrices, 30000); // actualiza cada 30 seg
+    </script>
+  </body>
+</html>
